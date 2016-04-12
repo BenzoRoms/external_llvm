@@ -18,6 +18,10 @@ LOCAL_PATH := $(call my-dir)
 
 libfuzzer_srcs := $(sort $(notdir $(wildcard $(LOCAL_PATH)/*.cpp)))
 
+# Suppress clang-tidy warnings that should not apply to llvm.
+libfuzzer_tidy_checks := \
+    -google-build-using-namespace,-google-explicit-constructor
+
 include $(CLEAR_VARS)
 LOCAL_CLANG := true
 LOCAL_MODULE := libLLVMFuzzerNoMain
@@ -25,6 +29,7 @@ LOCAL_C_INCLUDES := external/compiler-rt/include
 LOCAL_SRC_FILES := $(libfuzzer_srcs)
 LOCAL_SANITIZE := never
 LOCAL_MULTILIB := both
+LOCAL_TIDY_CHECKS := $(libfuzzer_tidy_checks)
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -34,6 +39,7 @@ LOCAL_SRC_FILES := FuzzerMain.cpp
 LOCAL_WHOLE_STATIC_LIBRARIES := libLLVMFuzzerNoMain
 LOCAL_SANITIZE := never
 LOCAL_MULTILIB := both
+LOCAL_TIDY_CHECKS := $(libfuzzer_tidy_checks)
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -43,6 +49,7 @@ LOCAL_C_INCLUDES := external/compiler-rt/include
 LOCAL_SRC_FILES := $(libfuzzer_srcs)
 LOCAL_SANITIZE := never
 LOCAL_MULTILIB := both
+LOCAL_TIDY_CHECKS := $(libfuzzer_tidy_checks)
 include $(BUILD_HOST_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -52,4 +59,5 @@ LOCAL_SRC_FILES := FuzzerMain.cpp
 LOCAL_WHOLE_STATIC_LIBRARIES := libLLVMFuzzerNoMain
 LOCAL_SANITIZE := never
 LOCAL_MULTILIB := both
+LOCAL_TIDY_CHECKS := $(libfuzzer_tidy_checks)
 include $(BUILD_HOST_STATIC_LIBRARY)
